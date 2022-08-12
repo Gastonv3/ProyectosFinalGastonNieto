@@ -1,0 +1,29 @@
+<h2 mat-dialog-title> {{data.operacionDesc}}</h2>
+<div mat-dialog-content>
+    <form [formGroup]="formularioAlta" (ngSubmit)="CargarAlumno()">
+
+    <mat-form-field class="example-full-width"  appearance="fill">
+        <mat-label>Nombre</mat-label>
+        <input matInput placeholder="Ex. Juan Luna" type="text" formControlName ="nombre" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width"  appearance="fill">
+        <mat-label>Curso</mat-label>
+        <input matInput placeholder="Ex. Programació" type="text" formControlName ="curso" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill" >
+        <mat-label>Nota</mat-label>
+        <input matInput placeholder="Ex. 10" type="number" formControlName ="nota" required>
+    </mat-form-field>
+
+    <div mat-dialog-actions>
+        <button mat-button mat-dialog-close (click)="onNoClick()">Cerrar</button>
+        <ng-container *ngIf="data.operacionCod !=3">
+            <button type="submit" mat-button [mat-dialog-close]="item" [disabled]="formularioAlta.status == 'INVALID'">Ok</button>
+        </ng-container>
+    </div>
+
+    </form>
+
+</div>
