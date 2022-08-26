@@ -16,7 +16,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { NombreCompletoPipe } from './shared/pipe/nombre-completo.pipe';
 import { Size20Directive } from './shared/directive/size20.directive';
-import { MenuComponent } from './components/menu/menu.component';
 import { MenuLateralComponent } from './components/menu-lateral/menu-lateral.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -29,7 +28,6 @@ import { MatListModule } from '@angular/material/list';
     AbmAlumnoComponent,
     NombreCompletoPipe,
     Size20Directive,
-    MenuComponent,
     MenuLateralComponent,
   ],
   imports: [
