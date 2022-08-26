@@ -14,21 +14,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { NombreCompletoPipe } from './shared/pipe/nombre-completo.pipe';
-import { Size20Directive } from './shared/directive/size20.directive';
 import { MenuLateralComponent } from './components/menu-lateral/menu-lateral.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { SharedModule } from './shared/shared.module';
+import { ListaCursosComponent } from './components/lista-cursos/lista-cursos.component';
+import { AbmCursoComponent } from './components/abm-curso/abm-curso.component';
+import { ListarClasesComponent } from './components/listar-clases/listar-clases.component';
+import { AbmClaseComponent } from './components/abm-clase/abm-clase.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ListaAlumnoComponent,
     AbmAlumnoComponent,
-    NombreCompletoPipe,
-    Size20Directive,
     MenuLateralComponent,
+    ListaCursosComponent,
+    AbmCursoComponent,
+    ListarClasesComponent,
+    AbmClaseComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +50,7 @@ import { MatListModule } from '@angular/material/list';
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
+    SharedModule,
   ],
   entryComponents: [AbmAlumnoComponent],
   providers: [],

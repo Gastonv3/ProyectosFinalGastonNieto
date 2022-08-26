@@ -9,7 +9,11 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 export class MenuLateralComponent implements OnDestroy {
   mobileQuery: MediaQueryList;
 
-  fillerNav = [{ name: 'Alumnos' }];
+  fillerNav = [
+    { name: 'Alumnos', route: 'alumnnos' },
+    { name: 'Cursos', route: 'cursos' },
+    { name: 'Clases', route: 'clases' },
+  ];
 
   private _mobileQueryListener: () => void;
 
