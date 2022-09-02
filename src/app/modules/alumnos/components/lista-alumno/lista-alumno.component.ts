@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 // import { ListaAlumnoService } from '../../service/lista-alumno/lista-alumno.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AbmAlumnoComponent } from '../abm-alumno/abm-alumno.component';
-import { IAlumno } from '../../shared/interface/alumno.interface';
-import { IAbmDialog } from '../../shared/interface/AbmDialog.interface';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { ListaAlumnoService } from 'src/app/core/service/lista-alumno/lista-alumno.service';
+import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
+import { IAlumno } from 'src/app/shared/interface/alumno.interface';
 
 @Component({
   selector: 'app-lista-alumno',

@@ -10,9 +10,9 @@ export class MenuLateralComponent implements OnDestroy {
   mobileQuery: MediaQueryList;
 
   fillerNav = [
-    { name: 'Alumnos', route: 'alumnnos' },
-    { name: 'Cursos', route: 'cursos' },
-    { name: 'Clases', route: 'clases' },
+    { name: 'Alumnos', route: 'alumnos/listar' },
+    { name: 'Cursos', route: 'cursos/listar' },
+    { name: 'Clases', route: 'clases/listar' },
   ];
 
   private _mobileQueryListener: () => void;

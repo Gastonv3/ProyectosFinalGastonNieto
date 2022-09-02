@@ -1,17 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
-import { IAlumno } from '../../shared/interface/alumno.interface';
-// import { ListaCursosService } from 'src/app/service/lista-cursos/lista-cursos.service';
+
 import { Subscription } from 'rxjs';
 import { ICurso } from 'src/app/shared/interface/cursos.interface';
 import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-abm-alumno',
@@ -25,7 +20,7 @@ export class AbmAlumnoComponent implements OnInit, OnDestroy {
     curso: ['', [Validators.required]],
     nota: ['', [Validators.required]],
   });
-
+  public textButton: string = '';
   public listado: ICurso[] = [];
 
   public item: IAbmDialog = {
@@ -46,7 +41,6 @@ export class AbmAlumnoComponent implements OnInit, OnDestroy {
     this.subcriptionCursos = this.serviceCursos
       .listarCursos()
       .subscribe((result) => {
-        console.log(this.listado);
         this.listado = result;
       });
     this.item.operacionCod = data.operacionCod;
@@ -58,6 +52,14 @@ export class AbmAlumnoComponent implements OnInit, OnDestroy {
       curso: data.alumno!.Curso,
       nota: data.alumno!.Nota,
     });
+
+    if (data.operacionCod == 3) this.formularioAlta.disable();
+    if (data.operacionCod == 1) this.textButton = 'Insertar';
+    if (data.operacionCod == 2) this.textButton = 'Actualizar';
+
+    // this.formularioAlta.get('nombre')!.disable();
+    // this.formularioAlta.get('nombre')!.disable();
+    // this.formularioAlta.get('nombre')!.disable();
   }
 
   ngOnDestroy(): void {

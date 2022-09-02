@@ -1,4 +1,8 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { AlumnosRoutingModule } from './alumnos-routing.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -9,14 +13,15 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatCardModule } from '@angular/material/card';
-
-import { Size20Directive } from './directive/size20.directive';
-import { NombreCompletoPipe } from './pipe/nombre-completo.pipe';
+import { HttpClientModule } from '@angular/common/http';
+import { AbmAlumnoComponent } from './components/abm-alumno/abm-alumno.component';
+import { ListaAlumnoComponent } from './components/lista-alumno/lista-alumno.component';
 
 @NgModule({
-  declarations: [NombreCompletoPipe, Size20Directive],
+  declarations: [ListaAlumnoComponent, AbmAlumnoComponent],
   imports: [
+    CommonModule,
+    AlumnosRoutingModule,
     MatTableModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -28,24 +33,9 @@ import { NombreCompletoPipe } from './pipe/nombre-completo.pipe';
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
-    MatCardModule,
+    HttpClientModule,
+    SharedModule,
   ],
-  providers: [],
-  exports: [
-    NombreCompletoPipe,
-    Size20Directive,
-    MatTableModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatButtonModule,
-    MatInputModule,
-    MatIconModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatListModule,
-    MatCardModule,
-  ],
+  entryComponents: [AbmAlumnoComponent],
 })
-export class SharedModule {}
+export class AlumnosModule {}

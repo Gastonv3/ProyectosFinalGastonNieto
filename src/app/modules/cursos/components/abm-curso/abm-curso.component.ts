@@ -6,8 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AbmAlumnoComponent } from 'src/app/modules/alumnos/components/abm-alumno/abm-alumno.component';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
-import { AbmAlumnoComponent } from '../abm-alumno/abm-alumno.component';
 
 @Component({
   selector: 'app-abm-curso',
@@ -28,6 +28,7 @@ export class AbmCursoComponent implements OnInit {
     cursos: { Id: 0, Nombre: '', Descripcion: '', Nivel: 0, Baja: 0 },
     post: 0,
   };
+  public textButton: string = '';
 
   constructor(
     private _fb: FormBuilder,
@@ -45,9 +46,9 @@ export class AbmCursoComponent implements OnInit {
       baja: data.cursos!.Baja,
     });
 
-    if (this.item.operacionCod == 3) {
-      this.formularioAlta.controls['baja'].disable();
-    }
+    if (data.operacionCod == 3) this.formularioAlta.disable();
+    if (data.operacionCod == 1) this.textButton = 'Insertar';
+    if (data.operacionCod == 2) this.textButton = 'Actualizar';
   }
 
   ngOnInit(): void {}

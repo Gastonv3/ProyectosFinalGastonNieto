@@ -3,13 +3,13 @@
     <form [formGroup]="formularioAlta" (ngSubmit)="CargarAlumno()">
 
     <mat-form-field class="example-full-width"  appearance="fill">
-        <mat-label>Nombre</mat-label>
-        <input matInput placeholder="Ex. Juan" type="text" formControlName ="nombre" required>
+        <mat-label>Tema</mat-label>
+        <input matInput placeholder="Ex. Objetos" type="text" formControlName ="tema" required>
     </mat-form-field>
 
     <mat-form-field class="example-full-width"  appearance="fill">
-        <mat-label>Apellido</mat-label>
-        <input matInput placeholder="Ex. Luna" type="text" formControlName ="apellido" required>
+        <mat-label>Descripción</mat-label>
+        <input matInput placeholder="Ex. Introducción ...." type="text" formControlName ="descripcion" required>
     </mat-form-field>
 <!-- 
     <mat-form-field class="example-full-width"  appearance="fill">
@@ -24,16 +24,23 @@
         </select>
     </mat-form-field>
 
-
     <mat-form-field class="example-full-width" appearance="fill" >
-        <mat-label>Nota</mat-label>
-        <input matInput placeholder="Ex. 10" type="number" formControlName ="nota" required>
+        <mat-label>Día</mat-label>
+        <input matInput placeholder="Ex. 10" type="date" formControlName ="dia" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill" required> 
+        <mat-label>Estado</mat-label>
+        <select matNativeControl formControlName ="baja"  required>
+          <option value=0>Abierto</option>
+          <option value=1>Cerrado</option>
+        </select>
     </mat-form-field>
 
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close (click)="onNoClick()">Cerrar</button>
         <ng-container *ngIf="data.operacionCod !=3">
-            <button type="submit" mat-button [mat-dialog-close]="item" [disabled]="formularioAlta.status == 'INVALID'">Ok</button>
+            <button type="submit" mat-button [mat-dialog-close]="item" [disabled]="formularioAlta.status == 'INVALID'">{{textButton}}</button>
         </ng-container>
     </div>
 

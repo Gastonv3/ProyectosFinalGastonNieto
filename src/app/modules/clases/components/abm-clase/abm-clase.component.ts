@@ -6,7 +6,7 @@ import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-curs
 // import { ListaCursosService } from 'src/app/service/lista-cursos/lista-cursos.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { ICurso } from 'src/app/shared/interface/cursos.interface';
-import { AbmAlumnoComponent } from '../abm-alumno/abm-alumno.component';
+import { AbmAlumnoComponent } from '../../../alumnos/components/abm-alumno/abm-alumno.component';
 
 @Component({
   selector: 'app-abm-clase',
@@ -38,7 +38,7 @@ export class AbmClaseComponent implements OnInit {
   };
 
   public subcriptionCursos: Subscription = new Subscription();
-
+  public textButton: string = '';
   public listado: ICurso[] = [];
 
   constructor(
@@ -65,10 +65,9 @@ export class AbmClaseComponent implements OnInit {
       curso: data.clase!.curso,
       baja: data.clase!.baja,
     });
-
-    if (this.item.operacionCod == 3) {
-      this.formularioAlta.controls['baja'].disable();
-    }
+    if (data.operacionCod == 3) this.formularioAlta.disable();
+    if (data.operacionCod == 1) this.textButton = 'Insertar';
+    if (data.operacionCod == 2) this.textButton = 'Actualizar';
   }
 
   ngOnDestroy(): void {

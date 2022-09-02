@@ -4,10 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ListaAlumnoComponent } from './components/lista-alumno/lista-alumno.component';
 
 import { MatTableModule } from '@angular/material/table';
-import { AbmAlumnoComponent } from './components/abm-alumno/abm-alumno.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,22 +17,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { SharedModule } from './shared/shared.module';
-import { ListaCursosComponent } from './components/lista-cursos/lista-cursos.component';
-import { AbmCursoComponent } from './components/abm-curso/abm-curso.component';
-import { ListarClasesComponent } from './components/listar-clases/listar-clases.component';
-import { AbmClaseComponent } from './components/abm-clase/abm-clase.component';
+import { AuthService } from './core/service/auth.service';
+import { HttpClientModule } from '@angular/common/http';
+import { AlumnosModule } from './modules/alumnos/alumnos.module';
+import { ClasesModule } from './modules/clases/clases.module';
+import { CursosModule } from './modules/cursos/cursos.module';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ListaAlumnoComponent,
-    AbmAlumnoComponent,
-    MenuLateralComponent,
-    ListaCursosComponent,
-    AbmCursoComponent,
-    ListarClasesComponent,
-    AbmClaseComponent,
-  ],
+  declarations: [AppComponent, MenuLateralComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -51,9 +42,14 @@ import { AbmClaseComponent } from './components/abm-clase/abm-clase.component';
     MatToolbarModule,
     MatListModule,
     SharedModule,
+    HttpClientModule,
+    AlumnosModule,
+    ClasesModule,
+    CursosModule,
+    AuthModule,
   ],
-  entryComponents: [AbmAlumnoComponent],
-  providers: [],
+  // entryComponents: [AbmAlumnoComponent],
+  providers: [AuthService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

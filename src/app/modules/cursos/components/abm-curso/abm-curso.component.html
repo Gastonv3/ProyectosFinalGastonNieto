@@ -31,7 +31,7 @@
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close (click)="onNoClick()">Cerrar</button>
         <ng-container *ngIf="data.operacionCod !=3">
-            <button type="submit" mat-button [mat-dialog-close]="item" [disabled]="formularioAlta.status == 'INVALID'">Ok</button>
+            <button type="submit" mat-button [mat-dialog-close]="item" [disabled]="formularioAlta.status == 'INVALID'">{{textButton}}</button>
         </ng-container>
     </div>
 

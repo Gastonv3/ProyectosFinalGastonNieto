@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { ListarClasesService } from 'src/app/core/service/listar-clases/listar-clases.service';
 // import { ListarClasesService } from 'src/app/service/listar-clases/listar-clases.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
-import { IClases } from '../../shared/interface/clases.interface';
+import { IClases } from '../../../../shared/interface/clases.interface';
 import { AbmClaseComponent } from '../abm-clase/abm-clase.component';
 
 @Component({
