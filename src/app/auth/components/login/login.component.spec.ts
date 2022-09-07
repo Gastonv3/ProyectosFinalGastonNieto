@@ -23,22 +23,22 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-  it('Componente creado.', () => {
+  it('Componente creado', () => {
     expect(component).toBeTruthy();
   });
 
-  //   it('Testea que el estado inicial del formulario sea invalid', () => {
-  //     expect(component.formulario.status).toEqual('INVALID');
-  //   });
-  //   it('Testea que el estado inicial del formulario sea invalid para una carga parcial del formulario', () => {
-  //     const formulario = component.formulario;
-  //     formulario.controls['usuario'].setValue('gaston');
-  //     expect(component.formulario.status).toEqual('INVALID');
-  //   });
-  //   it('Testea que el estado inicial del formulario sea VALID para una carga completa del formulario', () => {
-  //     const formulario = component.formulario;
-  //     formulario.controls['usuario'].setValue('gaston');
-  //     formulario.controls['contrasena'].setValue('1234');
-  //     expect(component.formulario.status).toEqual('VALID');
-  //   });
+  it('Testea que el estado inicial del formulario sea invalid', () => {
+    expect(component.formulario.status).toEqual('INVALID');
+  });
+  it('Testea que el estado inicial del formulario sea invalid para una carga parcial del formulario', () => {
+    const formulario = component.formulario;
+    formulario.controls['usuario'].setValue('gaston');
+    expect(component.formulario.status).toEqual('INVALID');
+  });
+  it('Testea que el estado inicial del formulario sea VALID para una carga completa del formulario', () => {
+    const formulario = component.formulario;
+    formulario.controls['usuario'].setValue('gaston');
+    formulario.controls['contrasena'].setValue('1234');
+    expect(component.formulario.status).toEqual('VALID');
+  });
 });
