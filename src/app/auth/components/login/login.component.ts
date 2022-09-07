@@ -13,13 +13,13 @@ export class LoginComponent implements OnInit {
   hide = true;
 
   formulario: FormGroup = new FormGroup({
-    usuario: new FormControl('', [Validators.required]),
-    contrasena: new FormControl('', [Validators.required]),
+    usuario: new FormControl('gg', [Validators.required]),
+    contrasena: new FormControl('1234', [Validators.required]),
   });
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService) {}
 
   ngOnInit(): void {}
-  public login() {
+  public async login() {
     const usuario: IUsuario = {
       user: this.formulario.value.usuario,
       pass: this.formulario.value.contrasena,

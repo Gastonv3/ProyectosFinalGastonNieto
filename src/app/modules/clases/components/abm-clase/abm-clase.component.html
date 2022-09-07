@@ -20,7 +20,7 @@
     <mat-form-field class="example-full-width" appearance="fill"required>
         <mat-label>Curso</mat-label>
         <select matNativeControl  formControlName ="curso" required>
-            <option [value]="item.Id" *ngFor="let item of this.listado ;index as i">{{ item.Nombre }}</option>
+            <option [value]="item.id" *ngFor="let item of this.listado ;index as i">{{ item.Nombre }}</option>
         </select>
     </mat-form-field>
 

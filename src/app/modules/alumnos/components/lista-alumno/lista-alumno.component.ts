@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { ListaAlumnoService } from 'src/app/core/service/lista-alumno/lista-alumno.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { IAlumno } from 'src/app/shared/interface/alumno.interface';
+import { ListaCursosService } from '../../../../core/service/lista-cursos/lista-cursos.service';
 
 @Component({
   selector: 'app-lista-alumno',
@@ -15,7 +16,6 @@ import { IAlumno } from 'src/app/shared/interface/alumno.interface';
   styleUrls: ['./lista-alumno.component.css'],
 })
 export class ListaAlumnoComponent implements OnInit {
-  listado: IAlumno[] = [];
   displayedColumns: string[] = [
     'Legajo',
     'Alumno',
@@ -26,26 +26,39 @@ export class ListaAlumnoComponent implements OnInit {
   dataSource!: MatTableDataSource<any>;
   public subcriptionCursos: Subscription = new Subscription();
 
-  constructor(public service: ListaAlumnoService, private dialog: MatDialog) {}
+  constructor(
+    public service: ListaAlumnoService,
+    private dialog: MatDialog,
+    public serviceCurso: ListaCursosService
+  ) {}
 
   ngOnInit(): void {
-    this.subcriptionCursos = this.service.listaAlumnos().subscribe((result) => {
-      this.listado = result;
-      this.dataSource = new MatTableDataSource(this.listado);
-    });
+    this.cargarAlumnos();
   }
 
-  // public cargarAlumnos() {
-  //   this.listado = this.service.listaAlumnos();
-  //   this.dataSource = new MatTableDataSource(this.listado);
-  // }
+  public cargarAlumnos() {
+    this.subcriptionCursos = this.service.listaAlumnos().subscribe((result) => {
+      this.service.listado = result;
+
+      this.serviceCurso.listarCursos().subscribe((cursos) => {
+        for (const iterator of this.service.listado) {
+          const itemClase = cursos.filter((item) => {
+            return item.id == iterator.Curso;
+          });
+          iterator.CursoNombre = itemClase[0].Nombre;
+        }
+      });
+
+      this.dataSource = new MatTableDataSource(this.service.listado);
+    });
+  }
 
   abrirModal() {
     let sendData: IAbmDialog = {
       operacionCod: 1,
       operacionDesc: 'Nuevo Alumno',
       alumno: {
-        Legajo: 0,
+        id: 0,
         Nombre: '',
         Apellido: '',
         Curso: 0,
@@ -59,10 +72,10 @@ export class ListaAlumnoComponent implements OnInit {
       data: sendData,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
-      this.service.AbmAlumno(result);
-      // this.cargarAlumnos();
+    dialogRef.afterClosed().subscribe(async (result) => {
+      this.service.cargarAlumno(result.alumno!).subscribe((alumno) => {
+        this.ngOnInit();
+      });
     });
   }
 
@@ -71,7 +84,7 @@ export class ListaAlumnoComponent implements OnInit {
       operacionCod: 3,
       operacionDesc: 'Consultar Alumno',
       alumno: {
-        Legajo: i,
+        id: item.id,
         Nombre: item.Nombre,
         Apellido: item.Apellido,
         Curso: item.Curso,
@@ -93,7 +106,7 @@ export class ListaAlumnoComponent implements OnInit {
       operacionCod: 2,
       operacionDesc: 'Modificar Alumno',
       alumno: {
-        Legajo: i,
+        id: item.id,
         Nombre: item.Nombre,
         Apellido: item.Apellido,
         Curso: item.Curso,
@@ -108,7 +121,10 @@ export class ListaAlumnoComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.service.AbmAlumno(result);
+      // this.service.AbmAlumno(result);
+      this.service.modificarAlumno(result.alumno!).subscribe((alumno) => {
+        this.ngOnInit();
+      });
     });
   }
 
@@ -117,7 +133,7 @@ export class ListaAlumnoComponent implements OnInit {
       operacionCod: 4,
       operacionDesc: 'Eliminar Alumno',
       alumno: {
-        Legajo: i,
+        id: item.id,
         Nombre: item.Nombre,
         Apellido: item.Apellido,
         Curso: item.Curso,
@@ -125,7 +141,10 @@ export class ListaAlumnoComponent implements OnInit {
       },
       post: i,
     };
-    this.service.AbmAlumno(sendData);
+    this.service.eliminarAlumno(sendData.alumno!).subscribe((alumno) => {
+      this.ngOnInit();
+    });
+    // this.service.AbmAlumno(sendData);
     // this.cargarAlumnos();
   }
 }

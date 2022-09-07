@@ -50,7 +50,6 @@ export class AbmClaseComponent implements OnInit {
     this.subcriptionCursos = this.serviceCursos
       .listarCursos()
       .subscribe((result) => {
-        console.log(this.listado);
         this.listado = result;
       });
 
@@ -85,6 +84,7 @@ export class AbmClaseComponent implements OnInit {
       this.formularioAlta.get('descripcion')?.value;
     this.item.clase!.curso = this.formularioAlta.get('curso')?.value;
     this.item.clase!.baja = this.formularioAlta.get('baja')?.value;
+    this.item.clase!.id = this.formularioAlta.get('id')?.value;
   }
 
   ngOnInit(): void {}

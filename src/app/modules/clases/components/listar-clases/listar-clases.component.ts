@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
+import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
 import { ListarClasesService } from 'src/app/core/service/listar-clases/listar-clases.service';
 // import { ListarClasesService } from 'src/app/service/listar-clases/listar-clases.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
@@ -27,7 +28,11 @@ export class ListarClasesComponent implements OnInit {
   public dataSource!: MatTableDataSource<any>;
 
   public subcriptionCursos: Subscription = new Subscription();
-  constructor(public service: ListarClasesService, private dialog: MatDialog) {}
+  constructor(
+    public service: ListarClasesService,
+    private dialog: MatDialog,
+    public serviceCurso: ListaCursosService
+  ) {}
 
   ngOnDestroy(): void {
     this.subcriptionCursos.unsubscribe();
@@ -35,6 +40,14 @@ export class ListarClasesComponent implements OnInit {
   ngOnInit(): void {
     this.subcriptionCursos = this.service.listarClases().subscribe((result) => {
       this.listado = result;
+      this.serviceCurso.listarCursos().subscribe((cursos) => {
+        for (const iterator of this.listado) {
+          const itemClase = cursos.filter((item) => {
+            return item.id == iterator.curso;
+          });
+          iterator.cursoNombre = itemClase[0].Nombre;
+        }
+      });
       this.dataSource = new MatTableDataSource(this.listado);
     });
   }
@@ -44,7 +57,7 @@ export class ListarClasesComponent implements OnInit {
       operacionCod: 1,
       operacionDesc: 'Nuevo Clase',
       clase: {
-        id: this.listado.length + 1,
+        id: 0,
         dia: '',
         tema: '',
         nro: 0,
@@ -67,7 +80,10 @@ export class ListarClasesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.service.procesarAbm(result);
+      // this.service.procesarAbm(result);
+      this.service.cargarClases(result.clase!).subscribe((clases) => {
+        this.ngOnInit();
+      });
     });
   }
 
@@ -128,7 +144,10 @@ export class ListarClasesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.service.procesarAbm(result);
+      // this.service.procesarAbm(result);
+      this.service.modificarClases(result.clase!).subscribe((clases) => {
+        this.ngOnInit();
+      });
     });
   }
 }

@@ -20,7 +20,7 @@
     <mat-form-field class="example-full-width" appearance="fill"required>
         <mat-label>Curso</mat-label>
         <select matNativeControl  formControlName ="curso" required>
-            <option [value]="item.Id" *ngFor="let item of this.listado ;index as i">{{ item.Nombre }}</option>
+            <option [value]="item.id" *ngFor="let item of this.listado ;index as i">{{ item.Nombre }}</option>
         </select>
     </mat-form-field>
 
@@ -28,7 +28,10 @@
     <mat-form-field class="example-full-width" appearance="fill" >
         <mat-label>Nota</mat-label>
         <input matInput placeholder="Ex. 10" type="number" formControlName ="nota" required>
-    </mat-form-field>
+          <mat-error *ngIf="formularioAlta.controls['nota'].hasError('min') || formularioAlta.controls['nota'].hasError('max')">
+            La nota debe ser entre 1 y 10
+          </mat-error>
+     </mat-form-field>
 
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close (click)="onNoClick()">Cerrar</button>

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AbmCursoComponent } from '../abm-curso/abm-curso.component';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
+import { CursosModule } from '../../cursos.module';
 
 @Component({
   selector: 'app-lista-cursos',
@@ -43,7 +44,7 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
       operacionCod: 1,
       operacionDesc: 'Nuevo Curso',
       cursos: {
-        Id: this.listado.length + 1,
+        id: 0,
         Nombre: '',
         Descripcion: '',
         Nivel: 0,
@@ -58,7 +59,10 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.service.procesarAbm(result);
+      // this.service.procesarAbm(result);
+      this.service.cargarCurso(result.cursos!).subscribe((curso) => {
+        this.ngOnInit();
+      });
     });
   }
 
@@ -67,7 +71,7 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
       operacionCod: 3,
       operacionDesc: 'Consultar Curso',
       cursos: {
-        Id: item.Id,
+        id: item.id,
         Nombre: item.Nombre,
         Descripcion: item.Descripcion,
         Nivel: item.Nivel,
@@ -88,7 +92,7 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
       operacionCod: 2,
       operacionDesc: 'Modificar Curso',
       cursos: {
-        Id: item.Id,
+        id: item.id,
         Nombre: item.Nombre,
         Descripcion: item.Descripcion,
         Nivel: item.Nivel,
@@ -103,7 +107,12 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.service.procesarAbm(result);
+      // this.service.procesarAbm(result);
+      if (result.cursos.id) {
+        this.service.modificarCurso(result.cursos!).subscribe((curso) => {
+          this.ngOnInit();
+        });
+      }
     });
   }
 
@@ -112,7 +121,7 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
       operacionCod: 4,
       operacionDesc: 'Eliminar Alumno',
       cursos: {
-        Id: item.Id,
+        id: item.id,
         Nombre: item.Nombre,
         Descripcion: item.Descripcion,
         Nivel: item.Nivel,
@@ -120,6 +129,6 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
       },
       post: i,
     };
-    this.service.procesarAbm(sendData);
+    // this.service.procesarAbm(sendData);
   }
 }

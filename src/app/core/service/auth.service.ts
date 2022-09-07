@@ -6,6 +6,7 @@ import { ISesion } from '../../shared/interface/sesion.interface';
 import { IUsuario } from '../../shared/interface/usuario.interface';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private _sesionSubject!: BehaviorSubject<ISesion>;
   private api: string = environment.url;
+  private usuarios: IUsuario[] = [];
 
   constructor(private http: HttpClient, private router: Router) {
     const sesion: ISesion = {
@@ -21,6 +23,9 @@ export class AuthService {
     this._sesionSubject = new BehaviorSubject(sesion);
   }
 
+  public logInApi() {
+    return this.http.get(`${this.api}/usuarios`);
+  }
   public logIn(usr: IUsuario) {
     console.log(usr);
     this.http
@@ -53,39 +58,6 @@ export class AuthService {
       });
   }
 
-  // iniciarSesion(usuario: Usuario) {
-  //   this.http
-  //     .get<Usuario[]>(`${this.api}/usuarios`)
-  //     .pipe(
-  //       map((usuarios: Usuario[]) => {
-  //         return usuarios.filter(
-  //           (u: Usuario) =>
-  //             u.usuario === usuario.usuario &&
-  //             u.contrasena === usuario.contrasena
-  //         )[0];
-  //       })
-  //     )
-  //     .pipe(catchError(this.manejarError))
-  //     .subscribe((usuario: Usuario) => {
-  //       if (usuario) {
-  //         const sesion: Sesion = {
-  //           sesionActiva: true,
-  //           usuario: {
-  //             id: usuario.id,
-  //             usuario: usuario.usuario,
-  //             contrasena: usuario.contrasena,
-  //             admin: usuario.admin,
-  //           },
-  //         };
-
-  //         this.sesionSubject.next(sesion);
-
-  //         this.router.navigate(['inicio']);
-  //       } else {
-  //         alert('Usario no encontrado');
-  //       }
-  //     });
-  // }
   public logOut() {
     const sesion: ISesion = {
       estado: false,

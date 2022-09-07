@@ -1,5 +1,5 @@
 export interface ICurso {
-  Id: number;
+  id: number;
   Nombre: string;
   Descripcion: string;
   Nivel: number;

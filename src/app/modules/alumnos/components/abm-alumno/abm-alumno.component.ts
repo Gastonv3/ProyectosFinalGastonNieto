@@ -1,5 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import {
+  FormGroup,
+  Validators,
+  FormBuilder,
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+} from '@angular/forms';
 
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 
@@ -7,6 +14,8 @@ import { Subscription } from 'rxjs';
 import { ICurso } from 'src/app/shared/interface/cursos.interface';
 import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ErrorStateMatcher } from '@angular/material/core';
+/** Error when invalid control is dirty, touched, or submitted. */
 
 @Component({
   selector: 'app-abm-alumno',
@@ -18,15 +27,16 @@ export class AbmAlumnoComponent implements OnInit, OnDestroy {
     nombre: ['', [Validators.required]],
     apellido: ['', [Validators.required]],
     curso: ['', [Validators.required]],
-    nota: ['', [Validators.required]],
+    nota: [0, [Validators.required, Validators.max(10), Validators.min(1)]],
   });
+
   public textButton: string = '';
   public listado: ICurso[] = [];
 
   public item: IAbmDialog = {
     operacionCod: 0,
     operacionDesc: '',
-    alumno: { Nombre: '', Apellido: '', Curso: 0, Nota: 0 },
+    alumno: { Nombre: '', Apellido: '', Curso: 0, Nota: 0, id: 0 },
     post: 0,
   };
 
@@ -46,6 +56,7 @@ export class AbmAlumnoComponent implements OnInit, OnDestroy {
     this.item.operacionCod = data.operacionCod;
     this.item.operacionDesc = data.operacionDesc;
     this.item.post = data.post;
+    this.item.alumno!.id = data.alumno?.id;
     this.formularioAlta.setValue({
       nombre: data.alumno!.Nombre,
       apellido: data.alumno!.Apellido,
@@ -77,20 +88,4 @@ export class AbmAlumnoComponent implements OnInit, OnDestroy {
     this.item.alumno!.Nota = this.formularioAlta.get('nota')?.value;
   }
   ngOnInit(): void {}
-  // public animal: string = '';
-  // public name: string = '';
-
-  // constructor(public dialog: MatDialog) {}
-
-  // openDialog(): void {
-  //   const dialogRef = this.dialog.open(AbmAlumnoComponent, {
-  //     width: '250px',
-  //     data: { name: this.name, animal: this.animal },
-  //   });
-
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     console.log('The dialog was closed');
-  //     this.animal = result;
-  //   });
-  // }
 }

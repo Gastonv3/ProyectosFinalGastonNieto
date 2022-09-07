@@ -25,7 +25,7 @@ export class AbmCursoComponent implements OnInit {
   public item: IAbmDialog = {
     operacionCod: 0,
     operacionDesc: '',
-    cursos: { Id: 0, Nombre: '', Descripcion: '', Nivel: 0, Baja: 0 },
+    cursos: { id: 0, Nombre: '', Descripcion: '', Nivel: 0, Baja: 0 },
     post: 0,
   };
   public textButton: string = '';
@@ -35,11 +35,12 @@ export class AbmCursoComponent implements OnInit {
     public dialogRef: MatDialogRef<AbmAlumnoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IAbmDialog
   ) {
+    console.log(data);
     this.item.operacionCod = data.operacionCod;
     this.item.operacionDesc = data.operacionDesc;
     this.item.post = data.post;
     this.formularioAlta.setValue({
-      id: data.cursos!.Id,
+      id: data.cursos!.id,
       nombre: data.cursos!.Nombre,
       descripcion: data.cursos!.Descripcion,
       nivel: data.cursos!.Nivel,
@@ -58,12 +59,11 @@ export class AbmCursoComponent implements OnInit {
   }
 
   public CargarCurso() {
-    console.log(this.formularioAlta.status);
     this.item.cursos!.Nombre = this.formularioAlta.get('nombre')?.value;
     this.item.cursos!.Descripcion =
       this.formularioAlta.get('descripcion')?.value;
     this.item.cursos!.Nivel = this.formularioAlta.get('nivel')?.value;
     this.item.cursos!.Baja = this.formularioAlta.get('baja')?.value;
-    this.item.cursos!.Id = this.formularioAlta.get('id')?.value;
+    this.item.cursos!.id = this.formularioAlta.get('id')?.value;
   }
 }
