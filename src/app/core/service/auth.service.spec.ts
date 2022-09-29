@@ -5,21 +5,36 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { ISesion } from 'src/app/shared/interface/sesion.interface';
 import { IUsuario } from 'src/app/shared/interface/usuario.interface';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+
+import { SesionState } from 'src/app/auth/sesion/state/sesion.reducer';
+import { Store } from '@ngrx/store';
 
 describe('AuthService', () => {
   let service: AuthService;
   const routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
   let httpClientSpy: { get: jasmine.Spy };
+  const initialState: SesionState = {
+    sesionActiva: false,
+  };
+
+  const testStore = jasmine.createSpyObj('Store', ['select']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [{ provide: Router, useValue: routerSpy }],
+      providers: [
+        { provide: Router, useValue: routerSpy },
+        {
+          provide: Store,
+          useValue: testStore,
+        },
+      ],
     });
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-    // service = TestBed.inject(AuthService);
-    service = new AuthService(httpClientSpy as any, routerSpy);
-  });
 
+    service = new AuthService(httpClientSpy as any, routerSpy, testStore);
+  });
   it('Debe retornar un arreglo de usuarios', (done: DoneFn) => {
     const mockData = [
       {
@@ -55,7 +70,6 @@ describe('AuthService', () => {
         id: '4',
       },
     ];
-
     httpClientSpy.get.and.returnValue(of(mockData));
     service.logInApi().subscribe((usuarios) => {
       expect(usuarios).toEqual(mockData);

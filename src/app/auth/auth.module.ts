@@ -5,6 +5,10 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './components/login/login.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { StoreModule } from '@ngrx/store';
+import * as fromSesion from './sesion/state/sesion.reducer';
+// import { EffectsModule } from '@ngrx/effects';
+// import { SesionEffects } from './sesion/state/sesion.effects';
 
 @NgModule({
   declarations: [LoginComponent],
@@ -14,6 +18,8 @@ import { SharedModule } from '../shared/shared.module';
     ReactiveFormsModule,
     FormsModule,
     SharedModule,
+    StoreModule.forFeature(fromSesion.sesionFeatureKey, fromSesion.reducer),
+    // EffectsModule.forFeature([SesionEffects]),
   ],
   exports: [LoginComponent],
 })

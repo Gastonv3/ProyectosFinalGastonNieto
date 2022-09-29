@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
 import { ListarClasesService } from 'src/app/core/service/listar-clases/listar-clases.service';
-// import { ListarClasesService } from 'src/app/service/listar-clases/listar-clases.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { IClases } from '../../../../shared/interface/clases.interface';
 import { AbmClaseComponent } from '../abm-clase/abm-clase.component';
+import { ClasesState } from '../../state/clases.reducer';
+import { Store } from '@ngrx/store';
+import { cargarClases } from '../../state/clases.actions';
+import {
+  selectCargandoState,
+  selectClasesCargandosState,
+} from '../../state/clases.selectors';
 
 @Component({
   selector: 'app-listar-clases',
@@ -26,33 +32,28 @@ export class ListarClasesComponent implements OnInit {
     'Acciones',
   ];
   public dataSource!: MatTableDataSource<any>;
-
+  public cargando$!: Observable<boolean>;
   public subcriptionCursos: Subscription = new Subscription();
   constructor(
     public service: ListarClasesService,
     private dialog: MatDialog,
-    public serviceCurso: ListaCursosService
+    public serviceCurso: ListaCursosService,
+    public store: Store<ClasesState>
   ) {}
 
   ngOnDestroy(): void {
     this.subcriptionCursos.unsubscribe();
   }
   ngOnInit(): void {
-    this.subcriptionCursos = this.service.listarClases().subscribe((result) => {
-      this.listado = result;
-      this.serviceCurso.listarCursos().subscribe((cursos) => {
-        for (const iterator of this.listado) {
-          const itemClase = cursos.filter((item) => {
-            return item.id == iterator.curso;
-          });
-          iterator.cursoNombre = itemClase[0].Nombre;
-        }
-      });
+    this.store.dispatch(cargarClases());
+    this.store.select(selectClasesCargandosState).subscribe((clases) => {
+      this.listado = clases!;
       this.dataSource = new MatTableDataSource(this.listado);
     });
+    this.cargando$ = this.store.select(selectCargandoState);
   }
 
-  abrirModal() {
+  public abrirModal() {
     let sendData: IAbmDialog = {
       operacionCod: 1,
       operacionDesc: 'Nuevo Clase',
@@ -64,12 +65,6 @@ export class ListarClasesComponent implements OnInit {
         descripcion: '',
         baja: 0,
         curso: 0,
-        // curso: {
-        //   Nombre: '',
-        //   Descripcion: '',
-        //   Nivel: 0,
-        //   Baja: 0,
-        // },
       },
       post: 0,
     };
@@ -80,10 +75,16 @@ export class ListarClasesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      // this.service.procesarAbm(result);
-      this.service.cargarClases(result.clase!).subscribe((clases) => {
-        this.ngOnInit();
-      });
+      if (result) {
+        this.service.cargarClases(result.clase!).subscribe((clases) => {
+          this.store.dispatch(cargarClases());
+          this.store.select(selectClasesCargandosState).subscribe((clases) => {
+            this.listado = clases!;
+            this.dataSource = new MatTableDataSource(this.listado);
+          });
+          this.cargando$ = this.store.select(selectCargandoState);
+        });
+      }
     });
   }
 
@@ -99,12 +100,6 @@ export class ListarClasesComponent implements OnInit {
         descripcion: item.descripcion,
         baja: item.baja,
         curso: item.curso,
-        // curso: {
-        //   Nombre: '',
-        //   Descripcion: '',
-        //   Nivel: 0,
-        //   Baja: 0,
-        // },
       },
       post: i,
     };
@@ -128,12 +123,6 @@ export class ListarClasesComponent implements OnInit {
         descripcion: item.descripcion,
         baja: item.baja,
         curso: item.curso,
-        // curso: {
-        //   Nombre: '',
-        //   Descripcion: '',
-        //   Nivel: 0,
-        //   Baja: 0,
-        // },
       },
       post: i,
     };
@@ -144,10 +133,16 @@ export class ListarClasesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      // this.service.procesarAbm(result);
-      this.service.modificarClases(result.clase!).subscribe((clases) => {
-        this.ngOnInit();
-      });
+      if (result) {
+        this.service.modificarClases(result.clase!).subscribe((clases) => {
+          this.store.dispatch(cargarClases());
+          this.store.select(selectClasesCargandosState).subscribe((clases) => {
+            this.listado = clases!;
+            this.dataSource = new MatTableDataSource(this.listado);
+          });
+          this.cargando$ = this.store.select(selectCargandoState);
+        });
+      }
     });
   }
 }

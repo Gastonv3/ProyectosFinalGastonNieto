@@ -23,6 +23,10 @@ import { AlumnosModule } from './modules/alumnos/alumnos.module';
 import { ClasesModule } from './modules/clases/clases.module';
 import { CursosModule } from './modules/cursos/cursos.module';
 import { AuthModule } from './auth/auth.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [AppComponent, MenuLateralComponent],
@@ -47,8 +51,13 @@ import { AuthModule } from './auth/auth.module';
     ClasesModule,
     CursosModule,
     AuthModule,
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+    EffectsModule.forRoot([]),
   ],
-  // entryComponents: [AbmAlumnoComponent],
   providers: [AuthService],
   bootstrap: [AppComponent],
 })

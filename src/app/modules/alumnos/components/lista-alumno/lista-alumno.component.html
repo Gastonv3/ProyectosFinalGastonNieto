@@ -1,5 +1,17 @@
 <div class="row g-0">
     <div class="col-12" style="padding: 10px;">
+      <div *ngIf="(cargando$ | async)" class="card">
+        <div class="card-header">
+          <div style="display: flex; justify-content: space-between;">
+            <p appSize20>Lista de Alumnos</p>
+          </div>
+        </div>
+        <div class="card-body" style="padding: 10px;">
+          <h1> Cargando... </h1>
+        </div>
+      </div>
+      
+      <div *ngIf="!(cargando$ | async)" class="card">
         <div class="card">
             <div class="card-header">
               <div style="display: flex; justify-content: space-between;">
@@ -50,7 +62,9 @@
                 </table>                  
 
             </div>
-          </div>
+        </div>
+      </div>
+
     </div>
 
 </div>

@@ -1,8 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
+import { cargarCursos } from 'src/app/modules/cursos/state/cursos.actions';
+import { CursosState } from 'src/app/modules/cursos/state/cursos.reducer';
+import {
+  selectCargandoState,
+  selectCursosCargandosState,
+  selectCursosState,
+} from 'src/app/modules/cursos/state/cursos.selectors';
 // import { ListaCursosService } from 'src/app/service/lista-cursos/lista-cursos.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { ICurso } from 'src/app/shared/interface/cursos.interface';
@@ -37,7 +45,6 @@ export class AbmClaseComponent implements OnInit {
     post: 0,
   };
 
-  public subcriptionCursos: Subscription = new Subscription();
   public textButton: string = '';
   public listado: ICurso[] = [];
 
@@ -45,33 +52,35 @@ export class AbmClaseComponent implements OnInit {
     private _fb: FormBuilder,
     public dialogRef: MatDialogRef<AbmAlumnoComponent>,
     public serviceCursos: ListaCursosService,
+    private store: Store<CursosState>,
     @Inject(MAT_DIALOG_DATA) public data: IAbmDialog
   ) {
-    this.subcriptionCursos = this.serviceCursos
-      .listarCursos()
-      .subscribe((result) => {
-        this.listado = result;
-      });
-
-    this.item.operacionCod = data.operacionCod;
-    this.item.operacionDesc = data.operacionDesc;
-    this.item.post = data.post;
-    this.formularioAlta.setValue({
-      id: data.clase!.id,
-      dia: data.clase!.dia,
-      tema: data.clase!.tema,
-      descripcion: data.clase!.descripcion,
-      curso: data.clase!.curso,
-      baja: data.clase!.baja,
+    this.store.select(selectCursosCargandosState).subscribe((cursos) => {
+      if (cursos == undefined) {
+        this.store.dispatch(cargarCursos());
+      }
     });
+    this.store.select(selectCursosCargandosState).subscribe((cursos) => {
+      this.item.operacionCod = data.operacionCod;
+      this.item.operacionDesc = data.operacionDesc;
+      this.item.post = data.post;
+      this.formularioAlta.setValue({
+        id: data.clase!.id,
+        dia: data.clase!.dia,
+        tema: data.clase!.tema,
+        descripcion: data.clase!.descripcion,
+        curso: data.clase!.curso,
+        baja: data.clase!.baja,
+      });
+      this.listado = cursos!;
+    });
+
     if (data.operacionCod == 3) this.formularioAlta.disable();
     if (data.operacionCod == 1) this.textButton = 'Insertar';
     if (data.operacionCod == 2) this.textButton = 'Actualizar';
   }
 
-  ngOnDestroy(): void {
-    this.subcriptionCursos.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -85,6 +94,10 @@ export class AbmClaseComponent implements OnInit {
     this.item.clase!.curso = this.formularioAlta.get('curso')?.value;
     this.item.clase!.baja = this.formularioAlta.get('baja')?.value;
     this.item.clase!.id = this.formularioAlta.get('id')?.value;
+    const itemClase = this.listado.filter((item) => {
+      return item.id == this.item.clase?.curso;
+    });
+    this.item.clase!.cursoNombre = itemClase[0].Nombre;
   }
 
   ngOnInit(): void {}

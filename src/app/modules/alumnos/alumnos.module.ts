@@ -16,6 +16,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
 import { AbmAlumnoComponent } from './components/abm-alumno/abm-alumno.component';
 import { ListaAlumnoComponent } from './components/lista-alumno/lista-alumno.component';
+import { StoreModule } from '@ngrx/store';
+import * as fromAlumnos from './state/alumnos.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AlumnosEffects } from './state/alumnos.effects';
 
 @NgModule({
   declarations: [ListaAlumnoComponent, AbmAlumnoComponent],
@@ -35,6 +39,8 @@ import { ListaAlumnoComponent } from './components/lista-alumno/lista-alumno.com
     MatListModule,
     HttpClientModule,
     SharedModule,
+    StoreModule.forFeature(fromAlumnos.alumnosFeatureKey, fromAlumnos.reducer),
+    EffectsModule.forFeature([AlumnosEffects]),
   ],
   entryComponents: [AbmAlumnoComponent],
 })

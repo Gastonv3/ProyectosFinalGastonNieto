@@ -7,6 +7,9 @@ import { IUsuario } from '../../shared/interface/usuario.interface';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
+import { Store } from '@ngrx/store';
+import { SesionState } from '../../auth/sesion/state/sesion.reducer';
+import { cargarSesion } from 'src/app/auth/sesion/state/sesion.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +19,11 @@ export class AuthService {
   private api: string = environment.url;
   private usuarios: IUsuario[] = [];
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private store: Store<SesionState>
+  ) {
     const sesion: ISesion = {
       estado: false,
     };
@@ -27,7 +34,6 @@ export class AuthService {
     return this.http.get(`${this.api}/usuarios`);
   }
   public logIn(usr: IUsuario) {
-    console.log(usr);
     this.http
       .get<IUsuario[]>(`${this.api}/usuarios`)
       .pipe(
@@ -51,6 +57,7 @@ export class AuthService {
             },
           };
           this._sesionSubject.next(sesion);
+          this.store.dispatch(cargarSesion({ usuarioActivo: usuario }));
           this.router.navigate(['/alumnos/listar']);
         } else {
           alert('Usario no encontrado');

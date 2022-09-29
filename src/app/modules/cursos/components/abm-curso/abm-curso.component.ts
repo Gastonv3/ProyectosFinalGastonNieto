@@ -1,10 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AbmAlumnoComponent } from 'src/app/modules/alumnos/components/abm-alumno/abm-alumno.component';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
@@ -35,7 +30,6 @@ export class AbmCursoComponent implements OnInit {
     public dialogRef: MatDialogRef<AbmAlumnoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IAbmDialog
   ) {
-    console.log(data);
     this.item.operacionCod = data.operacionCod;
     this.item.operacionDesc = data.operacionDesc;
     this.item.post = data.post;

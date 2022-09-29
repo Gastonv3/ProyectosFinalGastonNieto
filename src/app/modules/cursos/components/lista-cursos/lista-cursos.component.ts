@@ -1,13 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ICurso } from 'src/app/shared/interface/cursos.interface';
 import { MatTableDataSource } from '@angular/material/table';
-// import { ListaCursosService } from 'src/app/service/lista-cursos/lista-cursos.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AbmCursoComponent } from '../abm-curso/abm-curso.component';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { ListaCursosService } from 'src/app/core/service/lista-cursos/lista-cursos.service';
-import { CursosModule } from '../../cursos.module';
+import { CursosState } from '../../state/cursos.reducer';
+import { Store } from '@ngrx/store';
+import { cargarCursos, cursosCargados } from '../../state/cursos.actions';
+import {
+  selectCargandoState,
+  selectCursosCargandosState,
+} from '../../state/cursos.selectors';
 
 @Component({
   selector: 'app-lista-cursos',
@@ -25,21 +30,26 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
     'Acciones',
   ];
   public dataSource!: MatTableDataSource<any>;
+  public cargando$!: Observable<boolean>;
 
-  public subcriptionCursos: Subscription = new Subscription();
+  constructor(
+    public service: ListaCursosService,
+    private dialog: MatDialog,
+    private store: Store<CursosState>
+  ) {}
 
-  constructor(public service: ListaCursosService, private dialog: MatDialog) {}
-  ngOnDestroy(): void {
-    this.subcriptionCursos.unsubscribe();
-  }
+  ngOnDestroy(): void {}
+
   ngOnInit(): void {
-    this.subcriptionCursos = this.service.listarCursos().subscribe((result) => {
-      this.listado = result;
+    this.store.dispatch(cargarCursos());
+    this.store.select(selectCursosCargandosState).subscribe((cursos) => {
+      this.listado = cursos!;
       this.dataSource = new MatTableDataSource(this.listado);
     });
+    this.cargando$ = this.store.select(selectCargandoState);
   }
 
-  abrirModal() {
+  public abrirModal() {
     let sendData: IAbmDialog = {
       operacionCod: 1,
       operacionDesc: 'Nuevo Curso',
@@ -59,10 +69,16 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      // this.service.procesarAbm(result);
-      this.service.cargarCurso(result.cursos!).subscribe((curso) => {
-        this.ngOnInit();
-      });
+      if (result) {
+        this.service.cargarCurso(result.cursos!).subscribe((curso) => {
+          this.store.dispatch(cargarCursos());
+          this.store.select(selectCursosCargandosState).subscribe((cursos) => {
+            this.listado = cursos!;
+            this.dataSource = new MatTableDataSource(this.listado);
+          });
+        });
+        this.cargando$ = this.store.select(selectCargandoState);
+      }
     });
   }
 
@@ -107,11 +123,17 @@ export class ListaCursosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      // this.service.procesarAbm(result);
-      if (result.cursos.id) {
+      this.store.dispatch(cargarCursos());
+
+      if (result) {
         this.service.modificarCurso(result.cursos!).subscribe((curso) => {
-          this.ngOnInit();
+          this.service.listarCursos().subscribe((cursos) => {
+            this.listado = cursos;
+            this.dataSource = new MatTableDataSource(this.listado);
+            this.store.dispatch(cursosCargados({ cursos: cursos }));
+          });
         });
+        this.cargando$ = this.store.select(selectCargandoState);
       }
     });
   }

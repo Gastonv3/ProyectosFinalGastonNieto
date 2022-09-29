@@ -4,11 +4,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { AbmAlumnoComponent } from '../abm-alumno/abm-alumno.component';
 
 import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ListaAlumnoService } from 'src/app/core/service/lista-alumno/lista-alumno.service';
 import { IAbmDialog } from 'src/app/shared/interface/AbmDialog.interface';
 import { IAlumno } from 'src/app/shared/interface/alumno.interface';
 import { ListaCursosService } from '../../../../core/service/lista-cursos/lista-cursos.service';
+import { Store } from '@ngrx/store';
+import { AlumnosState } from '../../state/alumnos.reducer';
+import { cargarAlumnos } from '../../state/alumnos.actions';
+import {
+  selectAlumnosCargandosState,
+  selectCargandoState,
+} from '../../state/alumnos.selectors';
+import { ICurso } from '../../../../shared/interface/cursos.interface';
 
 @Component({
   selector: 'app-lista-alumno',
@@ -16,44 +24,36 @@ import { ListaCursosService } from '../../../../core/service/lista-cursos/lista-
   styleUrls: ['./lista-alumno.component.css'],
 })
 export class ListaAlumnoComponent implements OnInit {
-  displayedColumns: string[] = [
+  public listado: IAlumno[] = [];
+  public listadoCursos: ICurso[] = [];
+
+  public displayedColumns: string[] = [
     'Legajo',
     'Alumno',
     'Curso',
     'Nota',
     'Acciones',
   ];
-  dataSource!: MatTableDataSource<any>;
-  public subcriptionCursos: Subscription = new Subscription();
+  public dataSource!: MatTableDataSource<any>;
+  public cargando$!: Observable<boolean>;
 
   constructor(
     public service: ListaAlumnoService,
     private dialog: MatDialog,
-    public serviceCurso: ListaCursosService
+    public serviceCurso: ListaCursosService,
+    public store: Store<AlumnosState>
   ) {}
 
   ngOnInit(): void {
-    this.cargarAlumnos();
-  }
-
-  public cargarAlumnos() {
-    this.subcriptionCursos = this.service.listaAlumnos().subscribe((result) => {
-      this.service.listado = result;
-
-      this.serviceCurso.listarCursos().subscribe((cursos) => {
-        for (const iterator of this.service.listado) {
-          const itemClase = cursos.filter((item) => {
-            return item.id == iterator.Curso;
-          });
-          iterator.CursoNombre = itemClase[0].Nombre;
-        }
-      });
-
-      this.dataSource = new MatTableDataSource(this.service.listado);
+    this.store.dispatch(cargarAlumnos());
+    this.store.select(selectAlumnosCargandosState).subscribe((alumnos) => {
+      this.listado = alumnos!;
+      this.dataSource = new MatTableDataSource(this.listado);
     });
+    this.cargando$ = this.store.select(selectCargandoState);
   }
 
-  abrirModal() {
+  public abrirModal() {
     let sendData: IAbmDialog = {
       operacionCod: 1,
       operacionDesc: 'Nuevo Alumno',
@@ -73,9 +73,18 @@ export class ListaAlumnoComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      this.service.cargarAlumno(result.alumno!).subscribe((alumno) => {
-        this.ngOnInit();
-      });
+      if (result) {
+        this.service.cargarAlumno(result.alumno!).subscribe((alumno) => {
+          this.store.dispatch(cargarAlumnos());
+          this.store
+            .select(selectAlumnosCargandosState)
+            .subscribe((alumnos) => {
+              this.listado = alumnos!;
+              this.dataSource = new MatTableDataSource(this.listado);
+            });
+        });
+        this.cargando$ = this.store.select(selectCargandoState);
+      }
     });
   }
 
@@ -121,10 +130,18 @@ export class ListaAlumnoComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      // this.service.AbmAlumno(result);
-      this.service.modificarAlumno(result.alumno!).subscribe((alumno) => {
-        this.ngOnInit();
-      });
+      if (result) {
+        this.service.modificarAlumno(result.alumno!).subscribe((alumno) => {
+          this.store.dispatch(cargarAlumnos());
+          this.store
+            .select(selectAlumnosCargandosState)
+            .subscribe((alumnos) => {
+              this.listado = alumnos!;
+              this.dataSource = new MatTableDataSource(this.listado);
+            });
+        });
+        this.cargando$ = this.store.select(selectCargandoState);
+      }
     });
   }
 
@@ -142,9 +159,12 @@ export class ListaAlumnoComponent implements OnInit {
       post: i,
     };
     this.service.eliminarAlumno(sendData.alumno!).subscribe((alumno) => {
-      this.ngOnInit();
+      this.store.dispatch(cargarAlumnos());
+      this.store.select(selectAlumnosCargandosState).subscribe((alumnos) => {
+        this.listado = alumnos!;
+        this.dataSource = new MatTableDataSource(this.listado);
+      });
+      this.cargando$ = this.store.select(selectCargandoState);
     });
-    // this.service.AbmAlumno(sendData);
-    // this.cargarAlumnos();
   }
 }

@@ -5,17 +5,26 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AuthService } from '../../../core/service/auth.service';
+import { Store } from '@ngrx/store';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   const routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
+  const testStore = jasmine.createSpyObj('Store', ['select']);
 
+  // { provide: Router, useValue: routerSpy }
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, ReactiveFormsModule],
       declarations: [LoginComponent],
-      providers: [{ provide: Router, useValue: routerSpy }],
+      providers: [
+        { provide: Router, useValue: routerSpy },
+        {
+          provide: Store,
+          useValue: testStore,
+        },
+      ],
     }).compileComponents();
   });
   beforeEach(() => {
